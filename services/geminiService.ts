@@ -9,14 +9,18 @@ const getClient = () => {
     return new GoogleGenAI({ apiKey });
 };
 
+// Use Gemini 3 Pro for complex reasoning tasks
+const REASONING_MODEL = 'gemini-3-pro-preview';
+// Use Gemini 2.5 Flash for high-speed, lower latency tasks
+const FAST_MODEL = 'gemini-2.5-flash';
+
 export const analyzeFailure = async (transaction: Transaction): Promise<string> => {
     try {
         const ai = getClient();
-        const model = 'gemini-2.5-flash';
         
         const prompt = `
-        You are an expert Financial Auditor Agent.
-        Analyze the following failed transaction:
+        You are an expert Financial Auditor Agent powered by Gemini 3.
+        Analyze the following failed transaction with high precision:
         
         Vendor: ${transaction.vendorName}
         Amount: ${transaction.amount} ${transaction.currency}
@@ -27,7 +31,7 @@ export const analyzeFailure = async (transaction: Transaction): Promise<string> 
         `;
 
         const response = await ai.models.generateContent({
-            model,
+            model: REASONING_MODEL,
             contents: prompt,
             config: {
                 systemInstruction: "You are a precise and professional financial auditor."
@@ -44,7 +48,6 @@ export const analyzeFailure = async (transaction: Transaction): Promise<string> 
 export const draftVendorEmail = async (transaction: Transaction): Promise<{subject: string, body: string}> => {
     try {
         const ai = getClient();
-        const model = 'gemini-2.5-flash';
         
         const prompt = `
         You are a Vendor Liaison Agent.
@@ -59,7 +62,7 @@ export const draftVendorEmail = async (transaction: Transaction): Promise<{subje
         `;
 
         const response = await ai.models.generateContent({
-            model,
+            model: FAST_MODEL, // Flash is sufficient and faster for drafting
             contents: prompt,
             config: {
                 responseMimeType: "application/json"
@@ -77,10 +80,9 @@ export const draftVendorEmail = async (transaction: Transaction): Promise<{subje
 export const validateRectification = async (transaction: Transaction, adjustmentDetails: string): Promise<string> => {
     try {
         const ai = getClient();
-        const model = 'gemini-2.5-flash';
 
         const prompt = `
-        You are a Financial Controller Agent.
+        You are a Financial Controller Agent (Gemini 3).
         A user is attempting to rectify a failed transaction.
         
         Transaction: ${transaction.id} (${transaction.failureReason})
@@ -91,7 +93,7 @@ export const validateRectification = async (transaction: Transaction, adjustment
         `;
 
          const response = await ai.models.generateContent({
-            model,
+            model: REASONING_MODEL, // Validation needs high accuracy
             contents: prompt,
         });
 
@@ -105,7 +107,6 @@ export const validateRectification = async (transaction: Transaction, adjustment
 export const askTransactionQuestion = async (transaction: Transaction, question: string): Promise<string> => {
     try {
         const ai = getClient();
-        const model = 'gemini-2.5-flash';
 
         const prompt = `
         You are a helpful Financial Assistant.
@@ -125,7 +126,7 @@ export const askTransactionQuestion = async (transaction: Transaction, question:
         `;
 
         const response = await ai.models.generateContent({
-            model,
+            model: FAST_MODEL, // Chat should be snappy
             contents: prompt,
         });
 
@@ -141,7 +142,6 @@ export const askTransactionQuestion = async (transaction: Transaction, question:
 export const predictResolutionLikelihood = async (transaction: Transaction): Promise<PredictionResult> => {
     try {
         const ai = getClient();
-        const model = 'gemini-2.5-flash';
         
         const prompt = `
         Act as a Machine Learning Model specialized in financial risk.
@@ -154,7 +154,7 @@ export const predictResolutionLikelihood = async (transaction: Transaction): Pro
         `;
 
         const response = await ai.models.generateContent({
-            model,
+            model: FAST_MODEL,
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
@@ -168,26 +168,25 @@ export const predictResolutionLikelihood = async (transaction: Transaction): Pro
 export const generateAutoPilotPlan = async (transaction: Transaction): Promise<AutoPilotPlan> => {
     try {
         const ai = getClient();
-        const model = 'gemini-2.5-flash';
         
         const prompt = `
-        You are an Autonomous Financial Agent.
-        Create a 3-step execution plan to resolve this failed transaction.
+        You are an Autonomous Financial Agent powered by Gemini 3.
+        Create a strategic execution plan to resolve this failed transaction.
         
         Transaction: ${transaction.id}
         Reason: ${transaction.failureReason}
         
         Return JSON:
         {
-            "reasoning": "Brief explanation of strategy",
+            "reasoning": "A sophisticated explanation of the strategy being employed to resolve this specific error type.",
             "steps": [
-                { "action": "ANALYZE" | "EMAIL_VENDOR" | "RECTIFY", "description": "Display text" }
+                { "action": "ANALYZE" | "EMAIL_VENDOR" | "RECTIFY", "description": "Professional description of the step" }
             ]
         }
         `;
 
         const response = await ai.models.generateContent({
-            model,
+            model: REASONING_MODEL, // Planning requires the best model
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
