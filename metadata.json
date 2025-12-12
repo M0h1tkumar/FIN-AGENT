@@ -1,0 +1,5 @@
+{
+  "name": "FinAgent: Reconciliation Workspace",
+  "description": "An AI-powered financial workspace for managing transaction exceptions, automating vendor communication, and maintaining strict audit trails.",
+  "requestFramePermissions": []
+}
