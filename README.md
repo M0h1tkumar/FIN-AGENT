@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# FinAgent: Autonomous Financial Reconciliation Workspace
 
-# Run and deploy your AI Studio app
+**Powered by Google Gemini 3 Pro & Gemini 2.5 Flash**
 
-This contains everything you need to run your app locally.
+## 🔴 The Problem
+Financial reconciliation is the invisible bottleneck of modern enterprise operations. Despite automated ledgers, exceptions handle **20-30% of transaction volume**, forcing highly paid finance professionals to become data janitors.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1X0fJNH3ZphaHLQPRD0EfFKz2LH3iRP7D
+*   **Manual & Slow:** Finance teams spend hours investigating generic errors like "Routing Number Mismatch" or "Insufficient Funds".
+*   **High Latency:** Critical vendor payments get stuck, causing relationship friction and supply chain delays.
+*   **Fragmented Audit Trails:** Communication happens in email, while data lives in the ERP, creating a compliance nightmare.
+*   **Human Error:** Manual data correction is prone to "fat-finger" mistakes, leading to further discrepancies.
 
-## Run Locally
+## 🟢 The Solution
+**FinAgent** transforms reconciliation from a manual data entry chore into a high-level supervisory task. It utilizes a **Multi-Agent Architecture** to autonomously detect, analyze, and resolve transaction exceptions.
 
-**Prerequisites:**  Node.js
+Instead of just flagging an error, FinAgent acts on it.
 
+### How We Solve It with Gemini
+We leverage the specific strengths of different Gemini models to create a responsive yet deeply intelligent system:
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1.  **Auditor Agent (Powered by `gemini-3-pro-preview`):**
+    *   **Task:** Deep Analysis & Strategic Planning.
+    *   **The Solve:** It looks at the raw error code and transaction metadata to deduce the root cause. It then generates a JSON-based "Auto-Pilot" plan, outlining the exact steps needed to fix the issue.
+
+2.  **Liaison Agent (Powered by `gemini-2.5-flash`):**
+    *   **Task:** External Communication.
+    *   **The Solve:** Instantly drafts professional, context-aware emails to vendors. It pulls specific details (Invoice ID, Amount, Date) to reduce back-and-forth.
+
+3.  **Controller Agent (Powered by `gemini-3-pro-preview`):**
+    *   **Task:** Risk & Compliance Validation.
+    *   **The Solve:** Acts as a safety layer. When a user (or the Auto-Pilot) suggests a fix, the Controller validates it against accounting rules to ensure it actually solves the reported failure reason.
+
+### 🚀 Key Features
+*   **Auto-Pilot Mode:** The system autonomously executes the auditor's plan—analyzing, drafting emails, and updating statuses—while visualizing its reasoning in real-time.
+*   **ML Confidence Scoring:** A predictive model (simulated via Gemini) estimates the probability of successful resolution, helping humans prioritize high-risk cases.
+*   **Visual Reasoning:** We don't just show the result; we show the *thinking*. Users can see the AI's logic card before an action is taken.
+*   **Unified Audit Trail:** Every action—whether human or AI—is logged immutably, tagged by the specific Agent Persona (Auditor, Liaison, Controller).
+
+## 🛠️ Tech Stack
+*   **Frontend:** React 19, TypeScript, Tailwind CSS
+*   **AI SDK:** Google GenAI SDK (`@google/genai`)
+*   **Models:**
+    *   `gemini-3-pro-preview` (Reasoning, Planning, Validation)
+    *   `gemini-2.5-flash` (Chat, Summarization, Email Drafting)

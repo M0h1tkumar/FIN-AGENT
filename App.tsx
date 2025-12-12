@@ -81,6 +81,21 @@ const App: React.FC = () => {
             />
          </div>
          <div className="p-4 border-t border-slate-100 bg-slate-50">
+            {/* Project Description & Link */}
+            <div className="mb-4 p-3 bg-white rounded-lg border border-indigo-50 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                     <h4 className="text-[10px] font-bold text-indigo-900 uppercase tracking-widest">About Project</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed mb-3">
+                    A Next-Gen Autonomous Reconciliation Agent powered by <strong>Gemini 3 Pro</strong> and <strong>Gemini 2.5 Flash</strong>.
+                </p>
+                <a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition-colors">
+                    <span>PROJECT LINK</span>
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+            </div>
+
             <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs border border-indigo-200">
                     JD
