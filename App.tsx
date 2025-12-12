@@ -6,12 +6,15 @@ import AuditLogView from './components/AuditLogView';
 import AgentPanel from './components/AgentPanel';
 import StatusBadge from './components/StatusBadge';
 import LoadingScreen from './components/LoadingScreen';
+import SettingsModal from './components/SettingsModal';
+import { setApiKey } from './services/geminiService';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(INITIAL_AUDIT_LOGS);
   const [selectedId, setSelectedId] = useState<string | null>(INITIAL_TRANSACTIONS[0].id);
+  const [showSettings, setShowSettings] = useState(false);
 
   // Simulate initial data fetching
   useEffect(() => {
@@ -54,12 +57,23 @@ const App: React.FC = () => {
       }
   }
 
+  const handleSaveApiKey = (key: string) => {
+      setApiKey(key);
+      alert(key ? "API Key saved successfully. Live mode active." : "API Key removed. Demo mode active.");
+  }
+
   if (loading) {
     return <LoadingScreen />;
   }
 
   return (
     <div className="flex h-screen w-full bg-slate-50 overflow-hidden text-slate-800 font-sans">
+      <SettingsModal 
+        isOpen={showSettings} 
+        onClose={() => setShowSettings(false)} 
+        onSave={handleSaveApiKey}
+      />
+      
       {/* Sidebar */}
       <div className="w-80 flex-shrink-0 bg-white h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] border-r border-slate-100 flex flex-col">
          <div className="h-20 px-6 border-b border-slate-100 flex items-center gap-3 bg-white">
@@ -81,29 +95,23 @@ const App: React.FC = () => {
             />
          </div>
          <div className="p-4 border-t border-slate-100 bg-slate-50">
-            {/* Project Description & Link */}
-            <div className="mb-4 p-3 bg-white rounded-lg border border-indigo-50 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                     <h4 className="text-[10px] font-bold text-indigo-900 uppercase tracking-widest">About Project</h4>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs border border-indigo-200">
+                        JD
+                    </div>
+                    <div className="text-xs">
+                        <p className="font-medium text-slate-700">John Doe</p>
+                        <p className="text-slate-400">Senior Controller</p>
+                    </div>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed mb-3">
-                    A Next-Gen Autonomous Reconciliation Agent powered by <strong>Gemini 3 Pro</strong> and <strong>Gemini 2.5 Flash</strong>.
-                </p>
-                <a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition-colors">
-                    <span>PROJECT LINK</span>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                </a>
-            </div>
-
-            <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs border border-indigo-200">
-                    JD
-                </div>
-                <div className="text-xs">
-                    <p className="font-medium text-slate-700">John Doe</p>
-                    <p className="text-slate-400">Senior Controller</p>
-                </div>
+                <button 
+                    onClick={() => setShowSettings(true)}
+                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                    title="Configure API Key"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
             </div>
          </div>
       </div>

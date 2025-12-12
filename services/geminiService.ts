@@ -1,12 +1,22 @@
 import { GoogleGenAI } from "@google/genai";
 import { Transaction, AgentRole, AutoPilotPlan, PredictionResult } from '../types';
 
-const getClient = () => {
-    const apiKey = process.env.API_KEY || '';
-    if (!apiKey) {
-        console.warn("API Key not found in environment.");
+let userApiKey: string | null = localStorage.getItem('user_gemini_api_key');
+
+export const setApiKey = (key: string) => {
+    userApiKey = key;
+    if (key) {
+        localStorage.setItem('user_gemini_api_key', key);
+    } else {
+        localStorage.removeItem('user_gemini_api_key');
     }
-    return new GoogleGenAI({ apiKey });
+};
+
+const getClient = () => {
+    // Priority: User Input -> Env Var
+    const key = userApiKey || process.env.API_KEY; 
+    if (!key) return null;
+    return new GoogleGenAI({ apiKey: key });
 };
 
 // Use Gemini 3 Pro for complex reasoning tasks
@@ -14,10 +24,28 @@ const REASONING_MODEL = 'gemini-3-pro-preview';
 // Use Gemini 2.5 Flash for high-speed, lower latency tasks
 const FAST_MODEL = 'gemini-2.5-flash';
 
+// --- MOCK DATA HELPERS FOR DEMO MODE ---
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const analyzeFailure = async (transaction: Transaction): Promise<string> => {
-    try {
-        const ai = getClient();
+    const ai = getClient();
+    if (!ai) {
+        await delay(1500);
+        return `## 🟡 DEMO MODE ANALYSIS
         
+**Note:** Running in simulation mode (No API Key detected).
+
+**Root Cause Analysis:**
+The transaction failed with error code \`${transaction.failureReason}\`.
+This typically indicates a mismatch between the entity data stored in the ERP and the details provided by the payment gateway.
+
+**Recommended Actions:**
+1.  **Verify Master Data:** Check vendor ID \`${transaction.vendorName}\` in SAP/Oracle.
+2.  **Contact Vendor:** Request updated banking information via secure channel.
+        `;
+    }
+
+    try {
         const prompt = `
         You are an expert Financial Auditor Agent powered by Gemini 3.
         Analyze the following failed transaction with high precision:
@@ -46,9 +74,16 @@ export const analyzeFailure = async (transaction: Transaction): Promise<string> 
 };
 
 export const draftVendorEmail = async (transaction: Transaction): Promise<{subject: string, body: string}> => {
+    const ai = getClient();
+    if (!ai) {
+        await delay(1000);
+        return {
+            subject: `Action Required: Payment Issue - Invoice ${transaction.invoiceId}`,
+            body: `Dear ${transaction.vendorName} Team,\n\nWe attempted to process payment for Invoice ${transaction.invoiceId} on ${transaction.date}, but encountered the following error: "${transaction.failureReason}".\n\nCould you please verify your banking details on file? We are eager to resolve this immediately.\n\nBest regards,\nAccounts Payable (Demo)`
+        };
+    }
+
     try {
-        const ai = getClient();
-        
         const prompt = `
         You are a Vendor Liaison Agent.
         Draft a polite but firm professional email to the vendor regarding a transaction issue.
@@ -78,9 +113,13 @@ export const draftVendorEmail = async (transaction: Transaction): Promise<{subje
 };
 
 export const validateRectification = async (transaction: Transaction, adjustmentDetails: string): Promise<string> => {
-    try {
-        const ai = getClient();
+    const ai = getClient();
+    if (!ai) {
+        await delay(1000);
+        return "APPROVED: (Demo) The proposed adjustment aligns with standard operating procedures for this error type.";
+    }
 
+    try {
         const prompt = `
         You are a Financial Controller Agent (Gemini 3).
         A user is attempting to rectify a failed transaction.
@@ -105,9 +144,13 @@ export const validateRectification = async (transaction: Transaction, adjustment
 }
 
 export const askTransactionQuestion = async (transaction: Transaction, question: string): Promise<string> => {
-    try {
-        const ai = getClient();
+    const ai = getClient();
+    if (!ai) {
+        await delay(800);
+        return "I am currently running in **Demo Mode** because no API Key was provided. \n\nPlease configure your Google Gemini API Key in the settings (gear icon) to enable live chat capabilities.";
+    }
 
+    try {
         const prompt = `
         You are a helpful Financial Assistant.
         Context: The user is looking at a specific transaction record.
@@ -140,9 +183,16 @@ export const askTransactionQuestion = async (transaction: Transaction, question:
 // --- AGENTIC AI & ML FEATURES ---
 
 export const predictResolutionLikelihood = async (transaction: Transaction): Promise<PredictionResult> => {
+    const ai = getClient();
+    if (!ai) {
+        return { 
+            score: 85, 
+            label: 'High', 
+            rationale: '(Demo) High confidence based on historical resolution of similar routing errors.' 
+        };
+    }
+
     try {
-        const ai = getClient();
-        
         const prompt = `
         Act as a Machine Learning Model specialized in financial risk.
         Predict the likelihood (0-100) of successfully resolving this transaction failure without human intervention.
@@ -166,9 +216,19 @@ export const predictResolutionLikelihood = async (transaction: Transaction): Pro
 }
 
 export const generateAutoPilotPlan = async (transaction: Transaction): Promise<AutoPilotPlan> => {
+    const ai = getClient();
+    if (!ai) {
+        return {
+            reasoning: "(Demo) The system has identified a high-probability resolution path involving vendor outreach and data verification.",
+            steps: [
+                { action: 'ANALYZE', description: 'Cross-referencing failure code with vendor master data (Simulated)' },
+                { action: 'EMAIL_VENDOR', description: 'Generating automated inquiry for updated banking details (Simulated)' },
+                { action: 'RECTIFY', description: 'Flagging transaction for manual review pending vendor response (Simulated)' }
+            ]
+        };
+    }
+
     try {
-        const ai = getClient();
-        
         const prompt = `
         You are an Autonomous Financial Agent powered by Gemini 3.
         Create a strategic execution plan to resolve this failed transaction.

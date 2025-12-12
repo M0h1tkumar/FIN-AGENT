@@ -546,25 +546,6 @@ const AgentPanel: React.FC<Props> = ({ transaction, onAddLog, onUpdateStatus }) 
             </div>
         )}
 
-        {/* === FLOATING CHAT BUTTON (FAB) === */}
-        {!isChatOpen && (
-             <button
-                onClick={() => setIsChatOpen(true)}
-                className="absolute bottom-6 right-6 w-14 h-14 bg-slate-900 rounded-full shadow-2xl shadow-indigo-200 text-white flex items-center justify-center hover:bg-black hover:scale-105 transition-all z-30 group ring-4 ring-white/50"
-                aria-label="Open Chat Assistant"
-             >
-                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                </svg>
-                {/* Notification indicator */}
-                <span className="absolute top-0 right-0 flex h-4 w-4">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-4 w-4 bg-rose-500 border-2 border-white"></span>
-                </span>
-             </button>
-        )}
-
       </div>
     </div>
   );

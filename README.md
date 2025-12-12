@@ -42,3 +42,62 @@ We leverage the specific strengths of different Gemini models to create a respon
 *   **Models:**
     *   `gemini-3-pro-preview` (Reasoning, Planning, Validation)
     *   `gemini-2.5-flash` (Chat, Summarization, Email Drafting)
+
+## 🚢 How to Deploy to GitHub
+
+Since this application is built with React and TypeScript, follow these steps to deploy the source code to GitHub:
+
+### 1. Initialize Git
+Open your terminal in the project directory and run:
+
+```bash
+git init
+git add .
+git commit -m "Initial commit: FinAgent v1"
+```
+
+### 2. Create Repository
+1.  Go to [GitHub.com](https://github.com) and sign in.
+2.  Click the **+** icon in the top right and select **New repository**.
+3.  Name it `finagent-workspace` and click **Create repository**.
+
+### 3. Push to GitHub
+Copy the commands provided by GitHub (under "…or push an existing repository from the command line") and run them:
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/finagent-workspace.git
+git branch -M main
+git push -u origin main
+```
+
+## 💻 Running Locally
+
+This project uses modern React with TypeScript. To run it locally outside of this web environment, we recommend using [Vite](https://vitejs.dev/).
+
+1.  **Create a Vite project:**
+    ```bash
+    npm create vite@latest finagent -- --template react-ts
+    cd finagent
+    npm install
+    ```
+
+2.  **Install Dependencies:**
+    ```bash
+    npm install @google/genai tailwindcss postcss autoprefixer
+    npx tailwindcss init -p
+    ```
+
+3.  **Copy Files:**
+    Move the files from this project into the `src` folder of your new Vite project.
+
+4.  **Configure API Key:**
+    Create a `.env` file in the root:
+    ```
+    VITE_API_KEY=your_google_ai_studio_key
+    ```
+    *Note: You will need to update `services/geminiService.ts` to use `import.meta.env.VITE_API_KEY` instead of `process.env.API_KEY`.*
+
+5.  **Run:**
+    ```bash
+    npm run dev
+    ```
